@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import dotenv from 'dotenv';  //correccion 
-import MysqlDialect from "sequelize/lib/dialects/mysql/index";
+
 dotenv.config();
 
 export const sequelize = new Sequelize(
