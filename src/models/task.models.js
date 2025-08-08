@@ -15,4 +15,6 @@ export const Task = sequelize.define('Task', {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   }
+},{
+    timestamps: false // Agrega createdAt y updatedAt automáticamente
 });
