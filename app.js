@@ -1,9 +1,11 @@
 import express from 'express';
 import { sequelize } from './src/config/database.js';
-import { User } from './src/models/user.models.js';
-import { Task } from './src/models/task.models.js';
 import userRoutes from './src/routes/user.router.js';
 import taskRoutes from './src/routes/task.router.js';
+import routesTag from './src/routes/tag.router.js';
+import routesProfile from './src/routes/profile.router.js';
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +20,9 @@ app.get('/', (req, res) => {
 // Usamos las rutas de usuarios y tareas
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/tags', routesTag);
+app.use('/api/profiles', routesProfile);
+
 
 // Intentamos conectar a la base de datos, lo cual funciona correctamente
 // y sincronizamos los modelos para crear las tablas si no existen

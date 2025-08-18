@@ -1,25 +1,55 @@
-import { Task } from '../models/task.models.js';
+import { Task } from "../models/task.models.js";
+import { User } from "../models/user.models.js";
+import { Tag } from "../models/tag.models.js";
 
-// Obtiene todas las tareas... 
+// trae todas las tareas con su autor y tags
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await Task.findAll({
+      include: [
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "username", "email"]
+        },
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] }
+        }
+      ]
+    });
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener las tareas, lo siento, vuelve a intentarlo' });
+    res.status(500).json({ message: "error al obtener las tareas" });
   }
 };
 
-// obtiene una tarea por ID
+// trae una tarea puntual con su autor y tags
 export const getTaskById = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "username", "email"]
+        },
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] }
+        }
+      ]
+    });
+
     if (!task) {
-      return res.status(404).json({ message: 'tarea no encontrada, vuelve a intentarlo' });
+      return res.status(404).json({ message: "tarea no encontrada" });
     }
+
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener la tarea... vuelve a intentarlo mas tarde' });
+    res.status(500).json({ message: "error al obtener la tarea" });
   }
 };
 
@@ -92,5 +122,41 @@ export const deleteTask = async (req, res) => {
     res.status(200).json({ message: 'tarea eliminada con éxito' });
   } catch (error) {
     res.status(500).json({ message: 'rrror al eliminar la tarea, lo sentimos :(' });
+  }
+};
+
+// crear una tarea asociada a un usuario
+export const createTaskForUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { title, description, isComplete } = req.body;
+
+    // Validar que el usuario exista
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Validar campos
+    if (!title || !description) {
+      return res.status(400).json({ message: "faltan campos obligatorios" });
+    }
+
+    const existingTask = await Task.findOne({ where: { title } });
+    if (existingTask) {
+      return res.status(400).json({ message: "ya existe una tarea con ese título" });
+    }
+
+    // Crear tarea vinculada al usuario
+    const newTask = await Task.create({
+      title,
+      description,
+      isComplete: isComplete ?? false,
+      user_id: user.id // FK en la tabla tasks
+    });
+
+    res.status(201).json({ message: "Tarea creada y asociada al usuario con éxito", task: newTask });
+  } catch (error) {
+    res.status(500).json({ message: "Error al crear la tarea para el usuario", error: error.message });
   }
 };
