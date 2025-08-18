@@ -1,25 +1,55 @@
-import { Task } from '../models/task.models.js';
+import { Task } from "../models/task.models.js";
+import { User } from "../models/user.models.js";
+import { Tag } from "../models/tag.models.js";
 
-// Obtiene todas las tareas... 
+// trae todas las tareas con su autor y tags
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await Task.findAll({
+      include: [
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "username", "email"]
+        },
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] }
+        }
+      ]
+    });
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener las tareas, lo siento, vuelve a intentarlo' });
+    res.status(500).json({ message: "error al obtener las tareas" });
   }
 };
 
-// obtiene una tarea por ID
+// trae una tarea puntual con su autor y tags
 export const getTaskById = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const task = await Task.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "username", "email"]
+        },
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] }
+        }
+      ]
+    });
+
     if (!task) {
-      return res.status(404).json({ message: 'tarea no encontrada, vuelve a intentarlo' });
+      return res.status(404).json({ message: "tarea no encontrada" });
     }
+
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener la tarea... vuelve a intentarlo mas tarde' });
+    res.status(500).json({ message: "error al obtener la tarea" });
   }
 };
 

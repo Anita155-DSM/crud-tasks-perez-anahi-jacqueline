@@ -1,27 +1,60 @@
-import { User } from '../models/user.models.js';
+import { User } from "../models/user.models.js";
+import { Task } from "../models/task.models.js";
+import { ProfileModel } from "../models/profile.models.js";
 
-// getAllUsers trae todos los usuarios de la base de datos
+// trae todos los usuarios con sus tareas y perfil
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Task,
+          attributes: ["id", "title", "description", "is_completed"],
+          as: "tasks" // coincide con User.hasMany(Task, { as: "tasks" })
+        },
+        {
+          model: ProfileModel,
+          attributes: ["biografia", "avatar", "phone"],
+          as: "profile"
+        }
+      ]
+    });
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener los usuarios, lo siento mucho :(' });
+    res.status(500).json({ message: "error al obtener los usuarios", error: error.message });
   }
 };
 
-// logica que obtiene un usuario por ID
+// trae un usuario puntual con sus tareas y perfil
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(req.params.id, {
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Task,
+          attributes: ["id", "title", "description", "is_completed"],
+          as: "tasks" // coincide con la relación
+        },
+        {
+          model: ProfileModel,
+          attributes: ["biografia", "avatar", "phone"],
+          as: "profile"
+        }
+      ]
+    });
+
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
+
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: 'error al obtener el usuario...' });
+    res.status(500).json({ message: "error al obtener el usuario", error: error.message });
   }
 };
+
 
 // esta funcion crea un nuevo usuario
 // las validaciones son las sigueintes: nombre, email y password no pueden ser nulos, email debe ser único

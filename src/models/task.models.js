@@ -12,7 +12,7 @@ export const Task = sequelize.define('Task', {
 
 // Relación 1:N con User (uno a muchos) 
 Task.belongsTo(UserModel, { foreignKey: "user_id", as: "author" });
-UserModel.hasMany(Task, { foreignKey: 'user_id' });
+UserModel.hasMany(Task, { foreignKey: 'user_id', as: 'tasks' });
 
 // Relación N:M (muchos a mucjos) con Tag a través de TaskTag
 Task.belongsToMany(Tag, { through: TaskTagModel, foreignKey: 'task_id', as: 'tags' });
