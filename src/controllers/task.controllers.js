@@ -124,3 +124,39 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: 'rrror al eliminar la tarea, lo sentimos :(' });
   }
 };
+
+// crear una tarea asociada a un usuario
+export const createTaskForUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { title, description, isComplete } = req.body;
+
+    // Validar que el usuario exista
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Validar campos
+    if (!title || !description) {
+      return res.status(400).json({ message: "faltan campos obligatorios" });
+    }
+
+    const existingTask = await Task.findOne({ where: { title } });
+    if (existingTask) {
+      return res.status(400).json({ message: "ya existe una tarea con ese título" });
+    }
+
+    // Crear tarea vinculada al usuario
+    const newTask = await Task.create({
+      title,
+      description,
+      isComplete: isComplete ?? false,
+      user_id: user.id // FK en la tabla tasks
+    });
+
+    res.status(201).json({ message: "Tarea creada y asociada al usuario con éxito", task: newTask });
+  } catch (error) {
+    res.status(500).json({ message: "Error al crear la tarea para el usuario", error: error.message });
+  }
+};

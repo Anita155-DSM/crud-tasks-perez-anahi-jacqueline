@@ -12,7 +12,8 @@ routesTag.get("/", getTags);
 
 routesTag.post("/", createTag);
 
-routesTag.post("/assing", assignTagToTask);
+routesTag.post("/assign", assignTagToTask);
+
 
 
 
