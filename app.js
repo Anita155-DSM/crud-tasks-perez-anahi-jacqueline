@@ -1,9 +1,11 @@
 import express from 'express';
 import { sequelize } from './src/config/database.js';
-import { User } from './src/models/user.models.js';
-import { Task } from './src/models/task.models.js';
 import userRoutes from './src/routes/user.router.js';
 import taskRoutes from './src/routes/task.router.js';
+
+import { ProfileModel } from './src/models/profile.models.js';
+import { Task } from './src/models/task.models.js';
+import { TaskTagModel } from './src/models/task_tag.models.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
