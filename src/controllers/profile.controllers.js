@@ -27,9 +27,9 @@ export const createProfile = async (req, res) => {
 export const getProfiles = async (req, res) => {
   try {
     const profiles = await ProfileModel.findAll({
-      include: [{ model: UserModel, as: "user", attributes: ["id", "username", "email"] }],
+      include: [{ model: User, as: "user", attributes: ["id", "name", "email"] }],
     });
-    res.json(profiles);
+    res.status(200).json(profiles);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener perfiles", error: error.message });
   }

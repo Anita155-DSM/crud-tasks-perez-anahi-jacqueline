@@ -1,11 +1,11 @@
 import { Tag } from "../models/tag.models.js";
 import { Task } from "../models/task.models.js";
 
+// crear un nuevo tag, validando que no exista ya
 export const createTag = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Evitar duplicados
     const existing = await Tag.findOne({ where: { name } });
     if (existing) {
       return res.status(400).json({ message: "El tag ya existe" });
@@ -23,26 +23,9 @@ export const getTags = async (req, res) => {
     const tags = await Tag.findAll({
       include: [{ model: Task, as: "tasks", attributes: ["id", "title", "description"] }],
     });
-    res.json(tags);
+    res.status(200).json(tags);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener tags", error: error.message });
   }
 };
-
-export const assignTagToTask = async (req, res) => {
-  try {
-    const { taskId, tagId } = req.body;
-
-    const task = await Task.findByPk(taskId);
-    const tag = await Tag.findByPk(tagId);
-
-    if (!task || !tag) {
-      return res.status(404).json({ message: "Tarea o Tag no encontrado" });
-    }
-
-    await task.addTag(tag);
-    res.json({ message: "Tag asignado a la tarea con éxito" });
-  } catch (error) {
-    res.status(500).json({ message: "Error al asignar el tag", error: error.message });
-  }
-};
+//aca elimine assing to task cosa de que quede exclusivamente en task_tag.controllers.js para relacionar M:N desde la tabla intermedia

@@ -8,5 +8,3 @@ export const Tag = sequelize.define("tag", {
     unique: true 
   }
 }, { timestamps: false });
-
-// No defino Task.belongsToMany aquí para evitar ciclo, sino entra en ciclo
