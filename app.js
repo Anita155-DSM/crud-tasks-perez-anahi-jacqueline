@@ -4,6 +4,7 @@ import userRoutes from './src/routes/user.router.js';
 import taskRoutes from './src/routes/task.router.js';
 import routesTag from './src/routes/tag.router.js';
 import routesProfile from './src/routes/profile.router.js';
+import routerTaskTag from './src/routes/task_tag.router.js';
 
 
 
@@ -22,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/tags', routesTag);
 app.use('/api/profiles', routesProfile);
+app.use('/api/task_tags', routerTaskTag); //ruta nueva añadida para asignar y remover tags de tareaS
 
 
 // Intentamos conectar a la base de datos, lo cual funciona correctamente

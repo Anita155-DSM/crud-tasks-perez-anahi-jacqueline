@@ -1,7 +1,6 @@
 import { Router } from "express";
 
-import { createTag, assignTagToTask, getTags } from "../controllers/tag.controllers.js";
-
+import { createTag, getTags } from "../controllers/tag.controllers.js";
 
 
 const routesTag = Router();
@@ -11,10 +10,6 @@ const routesTag = Router();
 routesTag.get("/", getTags);
 
 routesTag.post("/", createTag);
-
-routesTag.post("/assign", assignTagToTask);
-
-
 
 
 export default routesTag;
