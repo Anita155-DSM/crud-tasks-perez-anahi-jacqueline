@@ -117,8 +117,9 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'usuario no encontrado' });
     }
 
-    await user.destroy();
-    res.status(200).json({ message: 'usuario eliminado con éxito' });
+    await user.update({ is_deleted: true });
+    res.status(200).json({ message: "usuario eliminado (lógicament)" });
+   
   } catch (error) {
     res.status(500).json({ message: 'error al eliminar el usuario' });
   }
