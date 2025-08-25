@@ -5,9 +5,12 @@ import { ProfileModel } from './profile.models.js';
 export const User = sequelize.define('User', {
   name: { type: DataTypes.STRING(100), allowNull: false },
   email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
-  password: { type: DataTypes.STRING(100), allowNull: false },
-  is_deleted: { type: DataTypes.BOOLEAN, defaultValue: false }
-}, { timestamps: false });
+  password: { type: DataTypes.STRING(100), allowNull: false }
+}, 
+{ 
+  paranoid: true,
+  timestamps: false
+ });
 
 
 // Solo aquí definimos la relación 1:1 (uno a uno)
