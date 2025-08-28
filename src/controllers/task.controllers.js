@@ -1,14 +1,13 @@
 import { Task } from "../models/task.models.js";
 import { User } from "../models/user.models.js";
-import { Tag } from "../models/tag.models.js";
+//import { Tag } from "../models/tag.models.js";
 
 // trae todas las tareas con su autor y tags
 export const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.findAll({
       include: [
-        { model: User, as: "author", attributes: ["id", "username", "email"] },
-        { model: Tag, as: "tags", through: { attributes: [] } },
+        { model: User, as: "author", attributes: ["id", "name", "email"] }
       ],
     });
     res.status(200).json(tasks);
@@ -17,13 +16,12 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-// trae una tarea puntual con su autor y tags
+// trae una tarea puntual con su autor
 export const getTaskById = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id, {
       include: [
-        { model: User, as: "author", attributes: ["id", "username", "email"] },
-        { model: Tag, as: "tags", through: { attributes: [] } },
+        { model: User, as: "author", attributes: ["id", "name", "email"] }
       ],
     });
 
@@ -34,6 +32,7 @@ export const getTaskById = async (req, res) => {
     res.status(500).json({ message: "error al obtener la tarea", error: error.message });
   }
 };
+
 
 // crear una nueva tarea
 export const createTask = async (req, res) => {

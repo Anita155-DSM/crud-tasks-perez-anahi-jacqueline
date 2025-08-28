@@ -13,12 +13,7 @@ export const getAllUsers = async (req, res) => {
           model: Task,
           attributes: ["id", "title", "description", "is_completed"],
           as: "tasks" // coincide con User.hasMany(Task, { as: "tasks" })
-        },
-        {
-          model: ProfileModel,
-          attributes: ["biografia", "avatar", "phone"],
-          as: "profile"
-        }
+        }//elimino profile porque aun no lo tengo en mis validaciones
       ]
     });
     res.status(200).json(users);
